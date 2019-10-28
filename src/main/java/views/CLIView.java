@@ -39,38 +39,46 @@ public class CLIView {
     }
 
     /**
-     * Prints input in table form.
+     * Returns a String array that contains input in table form.
      * @param toPrintAll ArrayList with each element fitting into one table, and each element consists of an
      *                   ArrayList of Strings containing the lines to be printed in a table
+     * @return A String array that contains input in table form.
      */
-    public void consolePrintTable(ArrayList<ArrayList<String>> toPrintAll) {
+    public String[] consolePrintTable(ArrayList<ArrayList<String>> toPrintAll) {
+        ArrayList<String> tableContent = new ArrayList<>();
         for (ArrayList<String> toPrint : toPrintAll) {
-            consolePrintTableHoriBorder(DEFAULT_HORI_BORDER_LENGTH);
+            tableContent.add(consolePrintTableHoriBorder(DEFAULT_HORI_BORDER_LENGTH));
             boolean hasPrintedTableHeader = false;
             for (String s : toPrint) {
                 if (s.length() <= DEFAULT_HORI_BORDER_LENGTH) {
-                    System.out.println(INDENTATION + VERTI_BORDER_UNIT + s
-                            + getRemainingSpaces(DEFAULT_HORI_BORDER_LENGTH - s.length()) + VERTI_BORDER_UNIT);
+                    String line = VERTI_BORDER_UNIT + s
+                            + getRemainingSpaces(DEFAULT_HORI_BORDER_LENGTH - s.length())
+                            + VERTI_BORDER_UNIT;
+                    tableContent.add(line);
                 } else {
                     String[] splitStrings = getArrayOfSplitStrings(s);
                     for (String s1 : splitStrings) {
-                        System.out.println(INDENTATION + VERTI_BORDER_UNIT + s1
-                                + getRemainingSpaces(DEFAULT_HORI_BORDER_LENGTH - s1.length()) + VERTI_BORDER_UNIT);
+                        String line = VERTI_BORDER_UNIT + s1
+                                + getRemainingSpaces(DEFAULT_HORI_BORDER_LENGTH - s1.length())
+                                + VERTI_BORDER_UNIT;
+                        tableContent.add(line);
                     }
                 }
                 if (!hasPrintedTableHeader) {
-                    consolePrintTableHoriBorder(DEFAULT_HORI_BORDER_LENGTH);
+                    tableContent.add(consolePrintTableHoriBorder(DEFAULT_HORI_BORDER_LENGTH));
                     hasPrintedTableHeader = true;
                 }
             }
-            consolePrintTableHoriBorder(DEFAULT_HORI_BORDER_LENGTH);
+            tableContent.add(consolePrintTableHoriBorder(DEFAULT_HORI_BORDER_LENGTH));
         }
+
+        return tableContent.toArray(new String[0]);
     }
 
     /**
      * Splits a long String into an array of smaller Strings to fit the table display.
-     * indexOfStringSplitStart refers to the index of the first char of the split string
-     * indexOfStringSplitEnd refers to the index after the index of the last char of the split string
+     * indexOfStringSplitStart refers to the index of the first char of the split string.
+     * indexOfStringSplitEnd refers to the index after the index of the last char of the split string.
      * @param toPrint String to be printed in table form.
      * @return array of Strings to be printed line by line to fit the table width requirement.
      */
@@ -131,16 +139,17 @@ public class CLIView {
     }
 
     /**
-     * Prints an indented horizontal border of a defined length with border corners (length not inclusive of corners).
+     * Returns an indented horizontal border of a defined length with border corners (length not inclusive of corners).
      * @param borderLength Length of border excluding corners.
+     * @return A String containing an indented horizontal border of a defined length with border corners.
      */
-    private void consolePrintTableHoriBorder(int borderLength) {
+    private String consolePrintTableHoriBorder(int borderLength) {
         char[] border = new char[borderLength];
         for (int i = 0; i < borderLength; i++) {
             border[i] = HORI_BORDER_UNIT;
         }
         String borderString = new String(border);
-        System.out.println(INDENTATION + BORDER_CORNER + borderString + BORDER_CORNER);
+        return BORDER_CORNER + borderString + BORDER_CORNER;
     }
 
     /**
@@ -179,7 +188,8 @@ public class CLIView {
             consolePrint("You currently have no projects!");
         } else {
             System.out.println("Here are all the Projects you are managing:");
-            consolePrintTable(allProjectsDetails);
+
+            consolePrint(consolePrintTable(allProjectsDetails));
         }
     }
 
@@ -243,7 +253,7 @@ public class CLIView {
         DukeLogger.logDebug(CLIView.class, allMemberDetailsForTable.toString());
         ArrayList<ArrayList<String>> tablesToPrint = new ArrayList<>();
         tablesToPrint.add(allMemberDetailsForTable);
-        consolePrintTable(tablesToPrint);
+        consolePrint(consolePrintTable(tablesToPrint));
     }
 
     /**
@@ -258,7 +268,7 @@ public class CLIView {
         allTaskDetailsForTable.add(0, "Tasks of " + projectToManage.getDescription() + ":");
         DukeLogger.logDebug(CLIView.class, allTaskDetailsForTable.toString());
         tableToPrint.add(allTaskDetailsForTable);
-        consolePrintTable(tableToPrint);
+        consolePrint(consolePrintTable(tableToPrint));
     }
 
     /**
